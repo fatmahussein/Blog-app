@@ -4,7 +4,7 @@ class Users < ActiveRecord::Migration[7.1]
       t.string :name
       t.string :photo
       t.string :bio
-      t.integer :posts_counter
+      t.integer :post_counter, default:0
       t.timestamps
     end
   end
