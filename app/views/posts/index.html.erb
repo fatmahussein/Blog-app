@@ -40,7 +40,7 @@
           <%= button_to 'Like', user_post_likes_path(@user, post), method: :post, class: 'button-link' %>
         </div>
 <!-- Post Comments -->
-        <% post.comments.each do |comment| %>
+        <% post.recent_comments.each do |comment| %>
           <div class="card mb-2">
             <div class="card-body">
               <p class="card-text"><%= comment.user.name %> : <%= comment.text %> </p>
