@@ -29,7 +29,14 @@ RSpec.feature 'User Profile Page' do
 
     expect(page).to have_content('There are currently no posts for this user in the system.')
   end
+ 
+  scenario 'links to create a new post' do
+    visit user_path(user)
 
+    click_link 'Create New Post'
+
+    expect(page).to have_current_path(new_user_post_path(user_id: user.id))
+  end
 
 
 end
