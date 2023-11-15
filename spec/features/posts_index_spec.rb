@@ -24,5 +24,12 @@ RSpec.feature 'User Profile Page' do
     expect(page).to have_content('A comment on the first post')
   end
 
+    scenario 'displays no posts message when no posts are present' do
+    visit user_path(user)
+
+    expect(page).to have_content('There are currently no posts for this user in the system.')
+  end
+
+
 
 end
