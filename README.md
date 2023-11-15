@@ -98,6 +98,11 @@ rspec spec --format documentation
 👤 Fatuma Hussein
 - GitHub: [&nbsp; &nbsp; @githubhandle](https://github.com/fatmahussein)
 
+## 👥 Authors <a name="authors"></a>
+
+👤 Mozammel JAwad
+- GitHub: [&nbsp; &nbsp; @githubhandle](https://github.com/MozamelJawad)
+
 
 <!-- FUTURE FEATURES -->
 
