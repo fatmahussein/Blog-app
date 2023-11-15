@@ -1,42 +1,66 @@
 require 'rails_helper'
 
-RSpec.feature 'User Profile Page' do
-  let(:user) { create(:user, name: 'John Doe', bio: 'A test bio') }
-
-  scenario 'displays user information and bio' do
-    visit user_path(user)
-
-    expect(page).to have_content('John Doe')
-    expect(page).to have_content('Number of posts: 0') # Assuming post_counter defaults to 0
-    expect(page).to have_content('Bio')
-    expect(page).to have_content('A test bio')
+RSpec.describe 'Post', type: :feature do
+  before :each do
+    @user1 = User.create!(name: 'Bashar', photo: 'https://unsplash.com/photos/1.jpg', bio: 'Teacher from Mexico.')
+    @post1 = Post.create!(author: @user1, title: 'First Post', text: 'First text')
+    @post2 = Post.create!(author: @user1, title: 'Second Post', text: 'Second text')
+    @comment1 = Comment.create!(post: @post1, user: @user1, text: 'Hi Bashar!')
+    @comment2 = Comment.create!(post: @post1, user: @user1, text: 'Hi Bashar!')
+    @like1 = Like.create!(post: @post1, user: @user1)
+    @like2 = Like.create!(post: @post1, user: @user1)
   end
+  describe 'Index page' do
+    it "should display the user's profile picture" do
+      visit user_posts_path(@user1)
+      expect(page).to have_css("img[src*='https://unsplash.com/photos/1.jpg']")
+    end
 
-    scenario 'displays user posts when present' do
-    post = create(:post, user: user, title: 'First Post', text: 'Content of the first post')
-    create(:comment, user: user, post: post, text: 'A comment on the first post')
+    it "should display the user's username" do
+      visit user_posts_path(@user1)
+      expect(page).to have_content(@user1.name)
+    end
 
-    visit user_path(user)
+    it "should display the user's number of posts" do
+      visit user_posts_path(@user1)
+      expect(page).to have_content(@user1.post_counter)
+    end
 
-    expect(page).to have_content('First Post')
-    expect(page).to have_content('Content of the first post')
-    expect(page).to have_content('Comment: 1, Likes: 0') # Assuming counters default to 0
-    expect(page).to have_content('A comment on the first post')
+    it "should display the post's title" do
+      visit user_posts_path(@user1)
+      expect(page).to have_content(@post1.title)
+    end
+
+    it "should display some of the post's body" do
+      visit user_posts_path(@user1)
+      expect(page).to have_content(@post1.text)
+    end
+
+    it 'should display the first comments on a post' do
+      visit user_posts_path(@user1)
+      expect(page).to have_content(@comment1.text)
+      expect(page).to have_content(@comment2.text)
+    end
+
+    it 'should display the number of comments on a post' do
+      visit user_posts_path(@user1)
+      expect(page).to have_content(@post1.comment_counter)
+    end
+
+    it 'should display the number of likes on a post' do
+      visit user_posts_path(@user1)
+      expect(page).to have_content(@post1.like_counter)
+    end
+
+    it "should redirect me to that post's show page when clicking on the post's title" do
+      visit user_posts_path(@user1)
+      click_link @post1.title
+      expect(page).to have_current_path(user_post_path(@user1, @post1))
+    end
+
+    it 'Should display the section to create a new post' do
+      visit user_posts_path(@user1)
+      expect(page).to have_content('Create New Post')
+    end
   end
-
-    scenario 'displays no posts message when no posts are present' do
-    visit user_path(user)
-
-    expect(page).to have_content('There are currently no posts for this user in the system.')
-  end
- 
-  scenario 'links to create a new post' do
-    visit user_path(user)
-
-    click_link 'Create New Post'
-
-    expect(page).to have_current_path(new_user_post_path(user_id: user.id))
-  end
-
-
 end

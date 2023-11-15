@@ -1,53 +1,60 @@
-# spec/features/user_profile_spec.rb
 require 'rails_helper'
 
-RSpec.feature 'User Profile Page' do
-  let(:user) { create(:user, name: 'John Doe', bio: 'A test bio') }
-
-  scenario 'displays user information and bio' do
-    visit user_path(user)
-
-    expect(page).to have_selector('.card.mb-3', count: 1)
-    expect(page).to have_content('John Doe')
-    expect(page).to have_content('Number of posts: 0') # Assuming post_counter defaults to 0
-    expect(page).to have_content('Bio')
-    expect(page).to have_content('A test bio')
+RSpec.describe 'User', type: :feature do
+  before :each do
+    @user1 = User.create!(name: 'Omair', photo: 'https://unsplash.com/photos/1.jpg', bio: 'Teacher from Mexico.',
+                          post_counter: 3)
+    @post1 = Post.create!(author: @user1, title: 'First Post', text: 'First text', comment_counter: 0,
+                          like_counter: 0)
+    @post2 = Post.create!(author: @user1, title: 'Second Post', text: 'Second text', comment_counter: 0,
+                          like_counter: 0)
+    @post3 = Post.create!(author: @user1, title: 'Third Post', text: 'Third text', comment_counter: 0,
+                          like_counter: 0)
   end
 
-  scenario 'displays recent posts when present' do
-    post1 = create(:post, user: user, title: 'First Post', text: 'Content of the first post')
-    post2 = create(:post, user: user, title: 'Second Post', text: 'Content of the second post')
+  describe 'show page' do
+    it 'should display the profile picture of the user' do
+      visit user_path(@user1)
+      expect(page).to have_css("img[src*='https://unsplash.com/photos/1.jpg']")
+    end
 
-    visit user_path(user)
+    it 'should display the username of the user' do
+      visit user_path(@user1)
+      expect(page).to have_content(@user1.name)
+    end
 
-    expect(page).to have_selector('.card.mb-2', count: 2)
-    expect(page).to have_content('First Post')
-    expect(page).to have_content('Content of the first post')
-    expect(page).to have_content('Second Post')
-    expect(page).to have_content('Content of the second post')
-    expect(page).to have_content('Comment: 0, Likes: 0', count: 2) # Assuming counters default to 0
+    it 'should display the number of posts of the user' do
+      visit user_path(@user1)
+      expect(page).to have_content(@user1.post_counter)
+    end
+
+    it 'should display the bio of the user' do
+      visit user_path(@user1)
+      expect(page).to have_content(@user1.bio)
+    end
+
+    it 'should display the user first 3 posts' do
+      visit user_path(@user1)
+      expect(page).to have_content(@post1.title)
+      expect(page).to have_content(@post2.title)
+      expect(page).to have_content(@post3.title)
+    end
+
+    it 'should have the button to display all posts' do
+      visit user_path(@user1)
+      expect(page).to have_link('See all Posts')
+    end
+
+    it "should redirect me to the post's show page when clicking on the user's post" do
+      visit user_path(@user1)
+      click_link @post1.title
+      expect(page).to have_current_path(user_post_path(@user1, @post1))
+    end
+
+    it "should redirect me to the user's post's index page when clicking on the 'See all Posts' button" do
+      visit user_path(@user1)
+      click_link 'See all Posts'
+      expect(page).to have_current_path(user_posts_path(@user1))
+    end
   end
-
-  scenario 'displays no posts message when no posts are present' do
-    visit user_path(user)
-
-    expect(page).to have_content('There are currently no posts for this user in the system.')
-  end
-
-  scenario 'links to see all posts' do
-    visit user_path(user)
-
-    click_link 'See all Posts'
-
-    expect(page).to have_current_path(user_posts_path(user_id: user.id))
-  end
-
-  scenario 'links to create a new post' do
-    visit user_path(user)
-
-    click_link 'Create New Post'
-
-    expect(page).to have_current_path(new_user_post_path(user_id: user.id))
-  end
-
 end

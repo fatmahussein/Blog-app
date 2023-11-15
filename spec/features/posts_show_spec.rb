@@ -1,30 +1,51 @@
-# spec/features/new_post_spec.rb
 require 'rails_helper'
 
-RSpec.feature 'Create New Post' do
-  let(:user) { create(:user) }
-
-  scenario 'user submits a valid post' do
-    visit new_user_post_path(user)
-
-    fill_in 'Title', with: 'Test Post'
-    fill_in 'Content', with: 'This is the content of the test post'
-
-    click_button 'Create Post'
-
-    expect(page).to have_content('Post created successfully')
-    expect(page).to have_content('Test Post')
-    expect(page).to have_content('This is the content of the test post')
+RSpec.describe 'Post', type: :feature do
+  before :each do
+    @user1 = User.create!(name: 'Shaheer', photo: 'https://unsplash.com/photos/1.jpg', bio: 'Teacher from Mexico.',
+                          post_counter: 1)
+    @post1 = Post.create!(author: @user1, title: 'First Post', text: 'First text', comment_counter: 2,
+                          like_counter: 1)
+    @comment1 = Comment.create!(post: @post1, user: @user1, text: 'Hi Shaheer!')
+    @comment2 = Comment.create!(post: @post1, user: @user1, text: 'Hi Shaheer!')
+    @like1 = Like.create!(post: @post1, user: @user1)
   end
 
-  scenario 'user submits an invalid post' do
-    visit new_user_post_path(user)
+  describe 'Show page' do
+    it "should display the post's title" do
+      visit user_posts_path(@user1, @post1)
+      expect(page).to have_content(@post1.title)
+    end
 
-    # Do not fill in any fields to simulate an invalid submission
+    it "should display the post's author" do
+      visit user_posts_path(@user1, @post1)
+      expect(page).to have_content(@user1.name)
+    end
 
-    click_button 'Create Post'
+    it "should display the post's number of comments" do
+      visit user_posts_path(@user1, @post1)
+      expect(page).to have_content(@post1.comment_counter)
+    end
 
-    expect(page).to have_content('Title can\'t be blank')
-    expect(page).to have_content('Text can\'t be blank')
+    it "should display the post's number of likes" do
+      visit user_posts_path(@user1, @post1)
+      expect(page).to have_content(@post1.like_counter)
+    end
+
+    it "should display the post's body" do
+      visit user_posts_path(@user1, @post1)
+      expect(page).to have_content(@post1.text)
+    end
+
+    it 'should display the username of each commentator' do
+      visit user_posts_path(@user1, @post1)
+      expect(page).to have_content(@user1.name)
+    end
+
+    it 'should display the text of each comment' do
+      visit user_posts_path(@user1, @post1)
+      expect(page).to have_content(@comment1.text)
+      expect(page).to have_content(@comment2.text)
+    end
   end
 end
