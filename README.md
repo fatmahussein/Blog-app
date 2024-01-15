@@ -64,7 +64,6 @@ To get a local copy up and running, follow these steps.
 ### Prerequisites
 
 In order to run this project you need:
-
 - PostgreSQL.
 - Code Editor.
 - Ruby On Rails.
@@ -100,7 +99,7 @@ rspec spec --format documentation
 
 ## 👥 Authors <a name="authors"></a>
 
-👤 Mozammel JAwad
+👤 Mozammel Jawad
 - GitHub: [&nbsp; &nbsp; @githubhandle](https://github.com/MozamelJawad)
 
 
@@ -112,7 +111,7 @@ Features will be added to the project.
 
 - **User Login Interface**
 - **User comments and like history**
-- **Report of inividual user**
+- **Report of individual user**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
