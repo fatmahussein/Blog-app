@@ -8,7 +8,7 @@ class User < ApplicationRecord
   has_many :likes
 
   # Validations
-  validates :name, presence: true
+  validates :name, presence: true, if: -> { new_record? } # Make name required only for new records
   validates :post_counter, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   # Methods

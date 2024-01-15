@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  
   # layout 'standard'
   def index
     @users = User.order(id: :asc)
