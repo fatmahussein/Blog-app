@@ -28,7 +28,6 @@
 
 The Blog app is a classic example of a blog website. which is a fully functional website that will show the list of posts and empower readers to interact with them by adding comments and liking posts.
 
-
 ## 🛠 Built With <a name="built-with"></a>
 
 ### Tech Stack <a name="tech-stack"></a>
@@ -63,7 +62,7 @@ To get a local copy up and running, follow these steps.
 
 ### Prerequisites
 
-In order to run this project you need:
+To run this project you need:
 - PostgreSQL.
 - Code Editor.
 - Ruby On Rails.
